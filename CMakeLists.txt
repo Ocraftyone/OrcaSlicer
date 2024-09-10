@@ -168,6 +168,11 @@ enable_testing ()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Flatpak overwrites the CXX standard
+if (FLATPAK)
+    set(CMAKE_CXX_STANDARD 20)
+endif ()
+
 if(NOT WIN32)
     # Add DEBUG flags to debug builds.
     add_compile_options("$<$<CONFIG:DEBUG>:-DDEBUG>")
@@ -298,7 +303,7 @@ if (NOT MSVC AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMP
     endif()
 
     # Bit of a hack for flatpak building: compress the debug info with zstd to save space in CI 
-    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 13.0)
+    if(FLATPACK AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 13.0)
         add_compile_options(-gz=zstd)
     endif()
 
